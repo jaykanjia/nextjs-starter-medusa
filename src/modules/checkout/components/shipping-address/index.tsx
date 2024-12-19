@@ -28,6 +28,8 @@ const ShippingAddress = ({
     "shipping_address.country_code": cart?.shipping_address?.country_code || "",
     "shipping_address.province": cart?.shipping_address?.province || "",
     "shipping_address.phone": cart?.shipping_address?.phone || "",
+    "shipping_address.cpf": cart?.shipping_address?.metadata?.cpf || "",
+    "shipping_address.number": cart?.shipping_address?.metadata?.number || "",
     email: cart?.email || "",
   })
 
@@ -61,6 +63,8 @@ const ShippingAddress = ({
         "shipping_address.country_code": address?.country_code || "",
         "shipping_address.province": address?.province || "",
         "shipping_address.phone": address?.phone || "",
+        "shipping_address.cpf": address?.metadata?.cpf || "",
+        "shipping_address.number": address?.metadata?.number || "",
       }))
 
     email &&
@@ -180,6 +184,24 @@ const ShippingAddress = ({
           value={formData["shipping_address.province"]}
           onChange={handleChange}
           data-testid="shipping-province-input"
+        />
+        <Input
+          label="CPF / CNPJ"
+          name="shipping_address.cpf"
+          autoComplete="cpf/cnpj"
+          value={formData["shipping_address.cpf"]}
+          onChange={handleChange}
+          required
+          data-testid="shipping-cpf-input"
+        />
+        <Input
+          label="House Number"
+          name="shipping_address.number"
+          autoComplete="number"
+          value={formData["shipping_address.number"]}
+          onChange={handleChange}
+          required
+          data-testid="shipping-number-input"
         />
       </div>
       <div className="my-8">

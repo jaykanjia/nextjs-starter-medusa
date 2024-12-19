@@ -7,6 +7,9 @@ import { Button } from "@medusajs/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
 import React, { useState } from "react"
 import ErrorMessage from "../error-message"
+import Spinner from "@modules/common/icons/spinner"
+import MipsPaymentButton from "./mips-payment-button"
+import RevcentPaymentButton from "./revcent-payment-button"
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
@@ -36,6 +39,34 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
         />
       )
     case isManual(paymentSession?.provider_id):
+      return (
+        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+      )
+    case isPaypal(paymentSession?.provider_id):
+      return (
+        <PayPalPaymentButton
+          notReady={notReady}
+          cart={cart}
+          data-testid={dataTestId}
+        />
+      )
+    case paymentSession?.provider_id === "pp_mips-payment_mips":
+      return (
+        <MipsPaymentButton
+          notReady={notReady}
+          cart={cart}
+          data-testid={dataTestId}
+        />
+      )
+    case paymentSession?.provider_id === "pp_revcent-cc_revcent":
+      return (
+        <RevcentPaymentButton
+          notReady={notReady}
+          cart={cart}
+          data-testid={dataTestId}
+        />
+      )
+    case paymentSession?.provider_id === "pp_pagbank-cc_pagbank":
       return (
         <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
       )

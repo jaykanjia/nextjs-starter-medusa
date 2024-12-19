@@ -14,6 +14,7 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
     "billing_address.country_code": cart?.billing_address?.country_code || "",
     "billing_address.province": cart?.billing_address?.province || "",
     "billing_address.phone": cart?.billing_address?.phone || "",
+    "billing_address.cpf": cart?.billing_address?.metadata?.cpf || "",
   })
 
   const handleChange = (
@@ -96,6 +97,15 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           value={formData["billing_address.province"]}
           onChange={handleChange}
           data-testid="billing-province-input"
+        />
+        <Input
+          label="CPF / CNPJ"
+          name="billing_address.cpf"
+          autoComplete="address-level1"
+          value={formData["billing_address.cpf"]}
+          onChange={handleChange}
+          required
+          data-testid="billing-cpf-input"
         />
         <Input
           label="Phone"

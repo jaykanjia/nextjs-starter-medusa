@@ -15,8 +15,8 @@ import {
 } from "./cookies"
 import { getRegion } from "./regions"
 
-export async function retrieveCart() {
-  const cartId = await getCartId()
+export async function retrieveCart(cartId: string | undefined = undefined) {
+  if (!cartId) cartId = await getCartId()
 
   if (!cartId) {
     return null
@@ -35,7 +35,7 @@ export async function retrieveCart() {
       method: "GET",
       query: {
         fields:
-          "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name",
+          "*items, *region, *items.product, *items.variant, +items.thumbnail, +items.metadata, *promotions, +shipping_address.metadata, +billing_address.metadata",
       },
       headers,
       next,
@@ -221,14 +221,33 @@ export async function initiatePaymentSession(
   data: {
     provider_id: string
     context?: Record<string, unknown>
-  }
+  },
+  extra?: Record<string, unknown>
 ) {
+  console.log({ ...data })
+
   const headers = {
     ...(await getAuthHeaders()),
   }
 
   return sdk.store.payment
-    .initiatePaymentSession(cart, data, {}, headers)
+    .initiatePaymentSession(
+      cart,
+      {
+        ...data,
+        context: {
+          ...data.context,
+          extra: {
+            ...extra,
+            cart_id: cart.id,
+            shipping_address: cart?.shipping_address,
+            billing_address: cart?.billing_address,
+          },
+        },
+      },
+      {},
+      headers
+    )
     .then(async (resp) => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
@@ -335,6 +354,10 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         country_code: formData.get("shipping_address.country_code"),
         province: formData.get("shipping_address.province"),
         phone: formData.get("shipping_address.phone"),
+        metadata: {
+          cpf: formData.get("shipping_address.cpf"),
+          number: formData.get("shipping_address.number"),
+        },
       },
       email: formData.get("email"),
     } as any
@@ -354,7 +377,13 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         country_code: formData.get("billing_address.country_code"),
         province: formData.get("billing_address.province"),
         phone: formData.get("billing_address.phone"),
+        metadata: {
+          cpf: formData.get("billing_address.cpf"),
+          number: formData.get("billing_address.number"),
+        },
       }
+    console.log("update address at checkout", { data })
+
     await updateCart(data)
   } catch (e: any) {
     return e.message
@@ -389,7 +418,12 @@ export async function placeOrder() {
     const countryCode =
       cartRes.order.shipping_address?.country_code?.toLowerCase()
     removeCartId()
-    redirect(`/${countryCode}/order/${cartRes?.order.id}/confirmed`)
+    try {
+      redirect(`/${countryCode}/order/${cartRes?.order.id}/confirmed`)
+    } catch (error) {
+      console.log(error)
+    }
+    return cartRes
   }
 
   return cartRes.cart

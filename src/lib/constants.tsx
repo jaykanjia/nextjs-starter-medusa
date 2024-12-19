@@ -30,6 +30,26 @@ export const paymentInfoMap: Record<
     title: "Manual Payment",
     icon: <CreditCard />,
   },
+  "pp_pagbank-cc_pagbank": {
+    title: "Pagbank Credit Card",
+    icon: <CreditCard />,
+  },
+  "pp_pagbank-boleto_pagbank": {
+    title: "Pagbank Boleto",
+    icon: <CreditCard />,
+  },
+  "pp_pagbank-pix_pagbank": {
+    title: "Pagbank PIX",
+    icon: <CreditCard />,
+  },
+  pp_mips_mips: {
+    title: "MIPS Paymnet",
+    icon: <CreditCard />,
+  },
+  "pp_revcent-cc_revcent": {
+    title: "Revcent Credit Card",
+    icon: <CreditCard />,
+  },
   // Add more payment providers here
 }
 
