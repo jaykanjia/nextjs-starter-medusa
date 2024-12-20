@@ -50,6 +50,10 @@ export const paymentInfoMap: Record<
     title: "Revcent Credit Card",
     icon: <CreditCard />,
   },
+  "pp_revcent-offline_revcent": {
+    title: "Revcent Offline",
+    icon: <CreditCard />,
+  },
   // Add more payment providers here
 }
 

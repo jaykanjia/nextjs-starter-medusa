@@ -15,7 +15,8 @@ import { Container, Heading, Text, clx } from "@medusajs/ui"
 import { StripeCardElementOptions } from "@stripe/stripe-js"
 
 import { isStripe as isStripeFunc, paymentInfoMap } from "@lib/constants"
-import { StripeContext } from "@modules/checkout/components/payment-wrapper"
+// import { StripeContext } from "@modules/checkout/components/payment-wrapper"
+import RevCentOfflinePaymentButton from "./revcent-offline-payment-button"
 
 const CustomPaymentForm = ({
   cart,
@@ -43,7 +44,7 @@ const CustomPaymentForm = ({
   const isOpen = searchParams.get("step") === "payment"
 
   const isStripe = isStripeFunc(activeSession?.provider_id)
-  const stripeReady = useContext(StripeContext)
+  // const stripeReady = useContext(StripeContext)
 
   const paidByGiftcard =
     cart?.gift_cards && cart?.gift_cards?.length > 0 && cart?.total === 0
@@ -142,6 +143,7 @@ const CustomPaymentForm = ({
                         cart={cart}
                       />
                     )
+
                   case "pp_pagbank-boleto_pagbank":
                     return (
                       <PagBankPaymentBoletoButton
@@ -159,6 +161,15 @@ const CustomPaymentForm = ({
                         valid={true}
                         provider_id={availablePaymentMethod.id}
                         activeSession={activeSession}
+                      />
+                    )
+                  case "pp_revcent-offline_revcent":
+                    return (
+                      <RevCentOfflinePaymentButton
+                        key={availablePaymentMethod.id}
+                        provider_id={availablePaymentMethod.id}
+                        valid={true}
+                        cart={cart}
                       />
                     )
                 }
